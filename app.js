@@ -38,15 +38,14 @@ let html = `
     </div>
     <div class="container">
         <div class="row">
-            <div class="team-area col-12 d-flex justify-content-center">
-               
+            <div class="team-area col-12 d-flex justify-content-center">`;
+
+let htmlEnd = `              
             </div>
         </div>
     </div>
 </body>
-
-</html>
-`;
+</html>`;
 
 const addManager = ()=>{
     inquirer.prompt([
@@ -184,11 +183,15 @@ function generateHtml(){
                     </div>
                 </div>`
             html += internCard;
+           
         }
     });
+
+    html += htmlEnd;
+
     fs.writeFile("output/team.html", html, err => {
         if(err) throw err;
-        console.log("Team profile generated!!!!!")
+        console.log("Team profile generated!")
     })
 }
 
