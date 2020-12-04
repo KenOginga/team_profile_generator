@@ -14,6 +14,7 @@
   This application is also run through a series of unit tests to ensure that information of each team member is generated according to the stipulated format.
 
 # Demonstration
+![demogif](https://user-images.githubusercontent.com/72943649/101112727-9757ff00-35a3-11eb-8ae3-30fe0550f6f7.gif)
 
 
 
