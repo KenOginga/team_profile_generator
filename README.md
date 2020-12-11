@@ -19,7 +19,7 @@
 
 
 # Screenshot
- ![output](https://user-images.githubusercontent.com/72943649/101112824-c8383400-35a3-11eb-97a6-b8b49210d701.PNG)
+ ![output](https://user-images.githubusercontent.com/72943649/101846396-7567fa80-3b16-11eb-8855-4e31ca15da80.PNG)
   
       
 # Installation
