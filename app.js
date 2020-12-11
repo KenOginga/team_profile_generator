@@ -6,11 +6,6 @@ const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 
-const OUTPUT_DIR = path.resolve(__dirname, "output");
-const outputPath = path.join(OUTPUT_DIR, "team.html");
-
-const render = require("./lib/htmlRenderer");
-const { type } = require("os");
 
 // defining empty team array
 const team = [];
@@ -41,13 +36,7 @@ let html = `
     </div>
     <div class="container">
         <div class="row">
-            <div class="team-area col-12 d-flex justify-content-center">
-
-            </div>
-        </div>
-    </div>
-</body>
-</html>`;
+            <div class="team-area col-12 d-flex justify-content-center">`;
 
 let htmlEnd = `              
             </div>
@@ -78,8 +67,26 @@ const addManager = ()=>{
             type: "number"
         }
     ]).then(response => {
-        const {name, id, email, officeNumber} = response;
-        const manager = new Manager(name, id, email, officeNumber);
+        
+        const manager = new Manager(response.name, response.id, response.email, response.officeNumber);
+
+        const managerCard = `
+        <div class="card employee-card m-3">
+            <div class="card-header">
+                <h2 class="card-title">${response.name}</h2>
+                <h3 class="card-title"><i class="fas fa-mug-hot mr-2"></i>Manager</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item">ID: ${response.id}</li>
+                    <li class="list-group-item">Email: <a href="mailto:${response.email}">${response.email}</a></li>
+                    <li class="list-group-item">Office number: ${response.officeNumber}</li>
+                </ul>
+            </div>
+        </div>`;
+
+        html += managerCard;
+
         team.push(manager);
         addTeamMember();
     })
@@ -88,7 +95,7 @@ const addManager = ()=>{
 const addEngineer = ()=>{
     inquirer.prompt([
         {
-            name: "name?",
+            name: "name",
             message:"What is the engineer's name?"
         },
         {
@@ -102,20 +109,37 @@ const addEngineer = ()=>{
         },
         {
             name: "github",
-            message: "What is the engineer's gitHub username?"
+            message: "What is the engineer's gitHub username?",
+            type: "input"
         }
     ]).then(response => {
-        const {name, id, email, github} = response;
-        const engineer = new Engineer(name, id, email, github);
+        const engineer = new Engineer(response.name,  response.id, response.email, response.github);
+        
+        const engineerCard = `
+            <div class="card employee-card m-3">
+                <div class="card-header">
+                    <h2 class="card-title">${response.name}</h2>
+                    <h3 class="card-title"><i class="fas fa-glasses mr-2"></i>Engineer</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">ID: ${response.id}</li>
+                        <li class="list-group-item">Email: <a href="mailto:${response.email}">${response.email}</a></li>
+                        <li class="list-group-item">GitHub: <a href="https://github.com/${response.github}" target="_blank" rel="noopener noreferrer">${response.github}</a></li>
+                    </ul>
+                </div>
+            </div>`;
+        html += engineerCard;
+
         team.push(engineer);
         addEmployee();
     })
 }
-// funciton that prompts question about the intern
+// // funciton that prompts question about the intern
 const addIntern = ()=>{
     inquirer.prompt([
         {
-            name: "name?",
+            name: "name",
             message:"What is the intern's name?"
         },
         {
@@ -132,72 +156,31 @@ const addIntern = ()=>{
             message: "What school is the intern attending?"
         }
     ]).then(response => {
-        const {name, id, email, school} = response;
-        const intern = new Intern(name, id, email, school);
-        team.push(intern)
+    const intern = new Intern( response.name, response.id, response.email, response.school);
+
+    const internCard = `
+                <div class="card employee-card m-3">
+                    <div class="card-header">
+                        <h2 class="card-title">${response.name}</h2>
+                        <h3 class="card-title"><i class="fas fa-mug-hot mr-2"></i>Intern</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">ID: ${response.id}</li>
+                            <li class="list-group-item">Email: <a href="mailto:${response.email}">${response.email}</a></li>
+                            <li class="list-group-item">School: ${response.school}</li>
+                        </ul>
+                    </div>
+                </div>`;
+        html += internCard;
+
+        team.push(intern);
         addEmployee();
     })
 }
 
-
-// funciton generates the employee cards based on user input
-function generateHtml(){
-    team.forEach(employee =>{
-        // using a conditional statement
-        if(employee.role === "Manager"){
-            const managerCard = `
-                <div class="card employee-card">
-                    <div class="card-header">
-                        <h2 class="card-title">${employee.name}</h2>
-                        <h3 class="card-title"><i class="fas fa-mug-hot mr-2"></i>${employee.role}</h3>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group">
-                            <li class="list-group-item">ID: ${employee.id}</li>
-                            <li class="list-group-item">Email: <a href="mailto:${employee.email}">${employee.email}</a></li>
-                            <li class="list-group-item">Office number: ${employee.officeNumber}</li>
-                        </ul>
-                    </div>
-                </div>`
-
-            html += managerCard;
-            
-        }else if (employee.role = "Engineer") {
-            const engineerCard = `
-                <div class="card employee-card">
-                    <div class="card-header">
-                        <h2 class="card-title">${employee.name}</h2>
-                        <h3 class="card-title"><i class="fas fa-mug-hot mr-2"></i>${employee.role}</h3>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group">
-                            <li class="list-group-item">ID: ${employee.id}</li>
-                            <li class="list-group-item">Email: <a href="mailto:${employee.email}">${employee.email}</a></li>
-                            <li class="list-group-item">Office number: ${employee.github}</li>
-                        </ul>
-                    </div>
-                </div>`
-            html += engineerCard;
-        } else{
-            const internCard = `
-                <div class="card employee-card">
-                    <div class="card-header">
-                        <h2 class="card-title">${employee.name}</h2>
-                        <h3 class="card-title"><i class="fas fa-mug-hot mr-2"></i>${employee.role}</h3>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group">
-                            <li class="list-group-item">ID: ${employee.id}</li>
-                            <li class="list-group-item">Email: <a href="mailto:${employee.email}">${employee.email}</a></li>
-                            <li class="list-group-item">Office number: ${employee.school}</li>
-                        </ul>
-                    </div>
-                </div>`
-            html += internCard;
-           
-        }
-    });
-
+// // funciton generates the employee cards based on user input
+function generateHtml() {
     html += htmlEnd;
 // output html file
     fs.writeFile("output/team.html", html, err => {
@@ -206,7 +189,7 @@ function generateHtml(){
     })
 }
 
-// prompt question to add more team members
+// // prompt question to add more team members
 const addEmployee = () =>{
     inquirer.prompt([
         {
@@ -219,11 +202,13 @@ const addEmployee = () =>{
         if(response.add === true){
             addTeamMember();
         } else{
-            generateHtml()
+            generateHtml();
+            console.log(team)
         }
     })
 }
-//
+
+// //
 const addTeamMember = () =>{
     inquirer.prompt([
         {
@@ -232,14 +217,16 @@ const addTeamMember = () =>{
             choices: ["Engineer", "Intern"],
             type: "list"
         }
-    ]).then(response =>{
-        const role = response.role;
-        if (role === "Engineer"){
+    ]).then(response => {
+        const employee = response.role;
+        if (employee === "Engineer"){
             addEngineer();
-        }else{
+        } else{
             addIntern();
         }
+        
     })
 }
 addManager();
+
 
